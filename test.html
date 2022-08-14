@@ -5,22 +5,41 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>test</title>
-  <link rel="stylesheet" href="test.css">
+  <link rel="stylesheet" href="./test.css">
 </head>
 
 <body>
-
-  <img
-    src="https://progedu.github.io/forum-ranking/assets/images/logo-n.svg"
-    alt="アイコン"
-  />
-  <h1>色in</h1>
-
-  <h3>変換したい文字を入力してね</h3>
-    <textarea id="textin" name="textin" rows="4" cols="40">rows="4"のテキストエリアです。</textarea>
-  <canvas id="testcanvas" width="300" height="300">
-    キャンバスの表示内容を説明する代替テキストです。
-  </canvas>
-  <script src="test.js"></script>
+  <header>
+    <div class="headerInner">
+      <h1 class="logo">いろin</h1>
+      <nav class="golovalNav"><a href="https://www.google.co.jp/">お問い合わせ</a></nav>
+    </div>
+  </header>
+  <main>
+    <div class="mainInner">
+      <article>
+        <section>
+          <h3>変換したい文字を入力してね</h3>
+          <textarea id="textin" name="textin" rows="4" cols="40">
+            rows="4"のテキストエリアです。
+          </textarea>
+          <button id="bConversion">変換</button>
+        </section>
+        <section id="outputArea">
+        </section>
+        <section>
+          <canvas id="testcanvas" width="150" height="150">
+            キャンバスの表示内容を説明する代替テキストです。
+          </canvas>
+       </section>
+        <script src="test.js"></script>
+      </article>
+    </div>
+  </main>
+  <footer>
+    <div class="footerInner">
+      <small>&copy;omawksni</small>
+    </div>
+  </footer> 
 </body>
 </html>

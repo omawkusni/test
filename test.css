@@ -1,0 +1,30 @@
+body{
+  margin: 0;
+}
+
+header{
+  background: #eee;
+}
+
+.headerInner,.mainInner{
+  max-width: 650px;
+  margin: auto;
+  padding: 0 20px;
+}
+
+.headerInner{
+  height: 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+footer{
+  background: #eee;
+}
+
+.footerInner{
+  text-align: center;
+  margin-top: 50px;
+  padding: 30px;
+}
