@@ -25,13 +25,44 @@ ConversionButton.onclick = () => {
   let strMax = alltext.length; //文字数
   const arrFormated = formatSingleWord(strMax,arrTest).split(',');
 
-  console.log(arrBoin[0][1]);
-  console.log(arrFormated);
+  //for (let index = 0; index < formatedMax ; index++) {
+  //const element = arrFormated[index];
+    
+  //}
+  
+
+  
+  
+
+ 
 
   // 診断結果表示エリアの作成
   const paragraph = document.createElement('p');
   paragraph.innerText = alltext;
   outputArea.appendChild(paragraph);
+
+  if (canvas.getContext) {
+  
+    var ctx = canvas.getContext('2d');
+
+    // 四角形を描画するメソッドfillRect(x, y, width, height)
+    for(let arrIndex=0; arrIndex<arrFormated.length; arrIndex++){
+      var thisColor 
+      for (let index = 0; index < 5; index++) {
+        if (arrBoin[index][0].includes(arrFormated[arrIndex]) ) {
+          thisColor = arrBoin[index][1]
+        }
+      }
+      console.log(thisColor);
+      ctx.fillStyle = thisColor; 
+      ctx.fillRect(arrIndex*60, 0, 50, 50);
+
+      }
+      // 描画するコードをここに
+  } else {
+    console.log("エラー");
+    // キャンバスに未対応の場合のコードをここに
+  }
 
 }
 
@@ -51,17 +82,3 @@ function formatSingleWord(maxlength,arrTest) {
   return buf;
 }
 
-if (canvas.getContext) {
-  
-  var ctx = canvas.getContext('2d');
-  console.log("大丈夫");
-  // 四角形を描画するメソッドfillRect()
-  ctx.fillStyle = 'black';
-  ctx.fillRect(0, 0, 50, 50);
-  ctx.fillStyle = 'red';
-  ctx.fillRect(55, 0, 50, 50);
-    // 描画するコードをここに
-} else {
-  console.log("エラー");
-  // キャンバスに未対応の場合のコードをここに
-}
