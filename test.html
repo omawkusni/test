@@ -19,14 +19,43 @@
     <div class="mainInner">
       <article>
         <section>
+          <h3>母音の色を指定してね</h3>
+            <div>
+            <label>あ行：<input type="color" id="colorA" name="boincolor"
+              value="#e66465"></label>
+            </div>
+            <div>
+            <label for="body">い行：<input type="color" id="colorI" name="boincolor"
+              value="#f6b73c"></label>
+            </div>
+          <div>
+            <label for="body">う行：<input type="color" id="colorU" name="boincolor"
+              value="#f6b73c"></label>
+
+          </div>
+          <div>
+            <label for="body">え行：<input type="color" id="colorE" name="boincolor"
+              value="#f6b73c"></label>
+          </div>
+          <div>
+            <label for="body">お行：<input type="color" id="colorO" name="boincolor"
+              value="#f6b73c"></label>
+            
+          </div>
+          <button id="btnColor">色固定</button>
+          <canvas id="boincanvas" width="700" height="60">
+            キャンバスの表示内容を説明する代替テキストです。
+          </canvas>
+        </section>
+        <section>
           <h3>変換したい文字を入力してね</h3>
-          <textarea id="textin" name="textin" rows="4" cols="40">あいうえお</textarea>
+          <textarea id="textin" name="textin" rows="10" cols="100"></textarea>
           <button id="bConversion">変換</button>
         </section>
         <section id="outputArea">
         </section>
         <section>
-          <canvas id="testcanvas" width="500" height="500">
+          <canvas id="testcanvas" width="1000" height="1000">
             キャンバスの表示内容を説明する代替テキストです。
           </canvas>
        </section>

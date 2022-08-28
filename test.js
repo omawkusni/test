@@ -1,17 +1,48 @@
 'use strict';
 const ConversionButton = document.getElementById('bConversion');
+const boinCanvas = document.getElementById('boincanvas');
+const colorElement = document.getElementsByName('boincolor');
+const Colorbtn = document.getElementById('btnColor');
 const canvas = document.getElementById('testcanvas');
 const outputArea = document.getElementById('outputArea')
 const inputText = document.getElementById('textin')
 const arrYouon = ['ぁ','ぃ','ぅ','ぇ','ぉ','ゃ','ゅ','ょ','ゎ','ゕ','ゖ']
-let arrBoin = [
-  [["あ","か","さ","た","な","は","ま","や","ら","わ","が","ざ","だ","ば","ぱ"], "red"],
-  [["い","き","し","ち","に","ひ","み","  ","り","  ","ぎ","じ","ぢ","び","ぴ"],"blue"],
-  [["う","く","す","つ","ぬ","ふ","む","ゆ","る","ん","ぐ","ず","づ","ぶ","ぷ"],"yellow"],
-  [["え","け","せ","て","ね","へ","め","  ","れ","  ","げ","ぜ","で","べ","ぺ"],"purple"],
-  [["お","こ","そ","と","の","ほ","も","よ","ろ","を","ご","ぞ","ど","ぼ","ぽ"],"orange"],
-  [["\n"],"black"]
-  ];
+let arrBoin
+
+
+  
+//母音の色設定
+Colorbtn.onclick = () => {
+
+
+
+if (boinCanvas.getContext) {
+  var ctx1 = boinCanvas.getContext('2d');
+
+  let recX = 0
+    ctx1.clearRect(0, 0, 100, 20)//
+    console.log(colorElement[0].value)
+    colorElement.forEach(element => {
+      ctx1.fillStyle = element.value
+      ctx1.fillRect(recX*60, 0 , 50, 50)
+      recX++
+    });
+
+    arrBoin = [
+      [["あ","か","さ","た","な","は","ま","や","ら","わ","が","ざ","だ","ば","ぱ","ぁ","ゃ","ゕ"], colorElement[0].value],
+      [["い","き","し","ち","に","ひ","み","  ","り","  ","ぎ","じ","ぢ","び","ぴ","ぃ"],colorElement[1].value],
+      [["う","く","す","つ","ぬ","ふ","む","ゆ","る","ん","ぐ","ず","づ","ぶ","ぷ","ぅ","ゅ"],colorElement[2].value],
+      [["え","け","せ","て","ね","へ","め","  ","れ","  ","げ","ぜ","で","べ","ぺ","ぇ","ゖ"],colorElement[3].value],
+      [["お","こ","そ","と","の","ほ","も","よ","ろ","を","ご","ぞ","ど","ぼ","ぽ","ぉ","ょ"],colorElement[4].value],
+      [["\n"],"black"]
+      ];
+
+  } else {
+    console.log ("表示できません")
+  }
+}  
+
+
 
 //変換ボタンを押したときの出力
 ConversionButton.onclick = () => {
@@ -20,42 +51,46 @@ ConversionButton.onclick = () => {
     return;
   }
   //テキストを1文字づつ配列にいれる
-  const alltext = inputText.value;
-  let arrTest = alltext.split('');
+  const arrText = inputText.value.split('');
   //拗音、撥音を分けなおして1音ずつに配列しなおす
-  let strMax = alltext.length; //文字数
-  const arrFormated = formatSingleWord(strMax,arrTest).split(',');
-  console.log(arrFormated)
+  const arrBunsetsu = devideIntoBunsetsu(arrText).split(',');
+  console.log(arrBunsetsu)
 
   // 結果表示エリアの作成
   const paragraph = document.createElement('p');
-  paragraph.innerText = alltext;
-  outputArea.appendChild(paragraph);
+  outputArea.innerText = ''
+ // paragraph.innerText = alltext;
+ // outputArea.appendChild(paragraph);
 
   if (canvas.getContext) {
   
     var ctx = canvas.getContext('2d');
-
-    // 四角形を描画するメソッドfillRect(x, y, width, height)
+    ctx.clearRect(0, 0, 1000, 1000)//描画をクリア
     let recX = 0
     let recY = 0
     // 一文字ずつまわす
-    for(let arrIndex of arrFormated){
+    for(let arrIndex of arrBunsetsu){
       let thisColor
         if (arrIndex === '\n') {
           recX = 0
           recY = recY + 60
         } else {
         //母音５行プラス改行で該当行を探す
-        for (let index = 0; index < 6; index++) {
-          if (arrBoin[index][0].includes(arrIndex ) ) {
-            thisColor = arrBoin[index][1]
+          for (let index = 0; index < 6; index++) {
+            var lastMoji = arrIndex.slice( -1) 
+            if (arrBoin[index][0].includes(lastMoji) ) {
+              thisColor = arrBoin[index][1];
+            }
           }
-        }
-        console.log(thisColor);
-        ctx.fillStyle = thisColor; 
-        ctx.fillRect(recX*60, recY , 50, 50);
-        recX++
+          console.log(thisColor);
+
+
+          ctx.fillStyle = thisColor; 
+         ctx.fillRect(recX*60, recY , 50, 50);
+
+          ctx.font = 'bold 10pt serif';
+          ctx.fillText(arrIndex,recX*60, recY+70)
+          recX++
         }
       }
       // 描画するコードをここに
@@ -65,19 +100,31 @@ ConversionButton.onclick = () => {
   }
 }
 
-function formatSingleWord(maxlength,arrTest) {
+function devideIntoBunsetsu(arrTest) {
   let buf = ''
-  for (let i = 0; i <= maxlength - 1; i++) {
+  for (let moji of arrTest) {
     if (buf === '' ) {
-      buf = arrTest[i]
-    } else if ( arrTest[i] === 'っ') {
-      buf = buf + arrTest[i];
-    } else if (arrYouon.includes(arrTest[i])) {
-      buf = buf + arrTest[i];
+      buf = moji
+    } else if ( moji === '\n') {  //改行は１節に区切る
+      buf = buf + ','+ moji;
+    } else if ( moji === 'っ') {   //促音は前の音につなげる
+      buf = buf + moji;
+    } else if (arrYouon.includes(moji)) {  //拗音なら前の音につなげる
+      buf = buf + moji;
+    } else if (isNotHiragana(moji)){  //ひらがな以外は前の音につなげる
+      buf = buf + moji;
     } else {
-      buf = buf +',' + arrTest[i];
+      buf = buf + ',' + moji;  //ひらがなは１節に区切る
     }
   }
   return buf;
 }
 
+function isNotHiragana(str){
+  str = (str==null)?"":str;
+  if(str.match(/^[ぁ-んー　]*$/)){    //"ー"の後ろの文字は全角スペースです。
+    return false;
+  }else{
+    return true;
+  }
+}
