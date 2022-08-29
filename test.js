@@ -6,9 +6,16 @@ const Colorbtn = document.getElementById('btnColor');
 const canvas = document.getElementById('testcanvas');
 const outputArea = document.getElementById('outputArea')
 const inputText = document.getElementById('textin')
+/**拗音（小さい音）が入っている配列*/
 const arrYouon = ['ぁ','ぃ','ぅ','ぇ','ぉ','ゃ','ゅ','ょ','ゎ','ゕ','ゖ']
-let arrBoin
-
+/**ひらがなが母音ごとに分けられた配列*/
+const arrBoin = [
+  ["あ","か","さ","た","な","は","ま","や","ら","わ","が","ざ","だ","ば","ぱ","ぁ","ゃ","ゕ"],
+  ["い","き","し","ち","に","ひ","み","  ","り","  ","ぎ","じ","ぢ","び","ぴ","ぃ"],
+  ["う","く","す","つ","ぬ","ふ","む","ゆ","る","ん","ぐ","ず","づ","ぶ","ぷ","ぅ","ゅ"],
+  ["え","け","せ","て","ね","へ","め","  ","れ","  ","げ","ぜ","で","べ","ぺ","ぇ","ゖ"],
+  ["お","こ","そ","と","の","ほ","も","よ","ろ","を","ご","ぞ","ど","ぼ","ぽ","ぉ","ょ"],
+  ];
 
   
 //母音の色設定
@@ -28,15 +35,6 @@ if (boinCanvas.getContext) {
       recX++
     });
 
-    arrBoin = [
-      [["あ","か","さ","た","な","は","ま","や","ら","わ","が","ざ","だ","ば","ぱ","ぁ","ゃ","ゕ"], colorElement[0].value],
-      [["い","き","し","ち","に","ひ","み","  ","り","  ","ぎ","じ","ぢ","び","ぴ","ぃ"],colorElement[1].value],
-      [["う","く","す","つ","ぬ","ふ","む","ゆ","る","ん","ぐ","ず","づ","ぶ","ぷ","ぅ","ゅ"],colorElement[2].value],
-      [["え","け","せ","て","ね","へ","め","  ","れ","  ","げ","ぜ","で","べ","ぺ","ぇ","ゖ"],colorElement[3].value],
-      [["お","こ","そ","と","の","ほ","も","よ","ろ","を","ご","ぞ","ど","ぼ","ぽ","ぉ","ょ"],colorElement[4].value],
-      [["\n"],"black"]
-      ];
-
   } else {
     console.log ("表示できません")
   }
@@ -52,8 +50,15 @@ ConversionButton.onclick = () => {
   }
   //テキストを1文字づつ配列にいれる
   const arrText = inputText.value.split('');
-  //拗音、撥音を分けなおして1音ずつに配列しなおす
+
+  /** 
+   * 拗音、撥音を考慮した文節ごとの配列
+   * @type {Array}
+   */
   const arrBunsetsu = devideIntoBunsetsu(arrText).split(',');
+
+  
+
   console.log(arrBunsetsu)
 
   // 結果表示エリアの作成
@@ -76,15 +81,13 @@ ConversionButton.onclick = () => {
           recY = recY + 60
         } else {
         //母音５行プラス改行で該当行を探す
-          for (let index = 0; index < 6; index++) {
-            var lastMoji = arrIndex.slice( -1) 
-            if (arrBoin[index][0].includes(lastMoji) ) {
-              thisColor = arrBoin[index][1];
+          for (let index = 0; index < 5; index++) {
+            var lastMoji = arrIndex.slice(0,1) 
+            if (arrBoin[index].includes(lastMoji) ) {
+              thisColor = colorElement[index].value;
             }
           }
           console.log(thisColor);
-
-
           ctx.fillStyle = thisColor; 
          ctx.fillRect(recX*60, recY , 50, 50);
 
@@ -127,4 +130,13 @@ function isNotHiragana(str){
   }else{
     return true;
   }
+}
+
+function selectBoin(str) {
+  let buf
+  if (arrboin.includes(str)) {
+    return 
+  
+ }
+  
 }
