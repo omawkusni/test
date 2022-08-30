@@ -1,10 +1,7 @@
 'use strict';
 const ConversionButton = document.getElementById('bConversion');
-const boinCanvas = document.getElementById('boincanvas');
 const colorElement = document.getElementsByName('boincolor');
-const Colorbtn = document.getElementById('btnColor');
 const canvas = document.getElementById('testcanvas');
-const outputArea = document.getElementById('outputArea')
 const inputText = document.getElementById('textin')
 
 
@@ -19,26 +16,6 @@ const arrBoin = [
   ];
 
   
-//母音の色設定
-Colorbtn.onclick = () => {
-
-if (boinCanvas.getContext) {
-  var ctx1 = boinCanvas.getContext('2d');
-
-  let recX = 0
-    ctx1.clearRect(0, 0, 100, 20)//
-
-    colorElement.forEach(element => {
-      ctx1.fillStyle = element.value
-      ctx1.fillRect(recX*60, 0 , 50, 50)
-      recX++
-    });
-
-  } else {
-    console.log ("表示できません")
-  }
-}  
-
 
 //変換ボタンを押したときの出力
 ConversionButton.onclick = () => {
