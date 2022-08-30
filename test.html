@@ -18,8 +18,10 @@
   <main>
     <div class="mainInner">
       <article>
+        <h2>このサイトでできること</h2>
+        <p>文章を母音ごとに色わけして四角で表示するよ</p>
         <section>
-          <h3>母音の色を指定してね</h3>
+          <h2>母音の色を指定してね</h2>
             <div>
             <label>あ行：<input type="color" id="colorA" name="boincolor"
               value="#e66465"></label>
@@ -40,14 +42,18 @@
             <label for="body">お行：<input type="color" id="colorO" name="boincolor"
               value="#c53bf7"></label>
           </div>
+          <div>
+            <label for="body">ｽﾍﾟｰｽ：<input type="color" id="colorO" name="boincolor"
+              value="#ffffff"></label>
+          </div>
           <button id="btnColor">色固定</button>
           <canvas id="boincanvas" width="700" height="60">
             キャンバスの表示内容を説明する代替テキストです。
           </canvas>
         </section>
         <section>
-          <h3>変換したい文字を入力してね</h3>
-          <textarea id="textin" name="textin" rows="10" cols="100"></textarea>
+          <h2>変換したい文字を入力してね</h2>
+          <textarea id="textin" name="textin" pattern="^[0-9A-Za-z]+$" title="エラー表記"  rows="10" cols="100"></textarea>
           <button id="bConversion">変換</button>
         </section>
         <section id="outputArea">
