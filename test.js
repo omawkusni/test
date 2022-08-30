@@ -1,12 +1,10 @@
 'use strict';
-const ConversionButton = document.getElementById('bConversion');
+const ConversionButton = document.getElementById('buttonid');
 const colorElement = document.getElementsByName('boincolor');
-const canvas = document.getElementById('testcanvas');
-const inputText = document.getElementById('textin')
+const canvas = document.getElementById('canvasid');
+const textElement = document.getElementById('textid')
 
-
-
-const arrBoin = [
+const arrByBoin = [
   "あかさたなはまらわがざだばぱぁやゃゕ",
   "いきしちにひみりゐぎじぢびぴぃ",
   "うくすつぬふむるんぐずづぶぷぅゆゅゔ",
@@ -15,49 +13,45 @@ const arrBoin = [
   " 　" //半角スペースと全角スペース
   ];
 
-  
-
 //変換ボタンを押したときの出力
 ConversionButton.onclick = () => {
   // テキストが空の時は処理を終了する
-  if (inputText.length === 0) {
-    return;
-  }
-
+  if (textElement.length === 0) { return; }
   // キャンバスに未対応の場合
   if (!canvas.getContext) {
     alert("すいません。表示ができません。" )
     return;
   }
-
   //テキストを1文字づつ配列にいれる
-  const arrText = inputText.value.split('');
+  const arrText = textElement.value.split('');
+  //キャンバスを設定
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, 1000, 1000)//描画をクリア
-  ctx.font = 'bold 10pt serif';
+  ctx.font = 'bold 10pt 游明朝';
   let recX = 0
   let recY = 0
 
   /**
    * Mapオブジェクト
    * (key：追加順No
-   * value:{moji:文節,boin:文節の主韻,haba:文節の幅})    
+   * value:{moji:音節,shuin:音節の主韻,haba:音節の幅})
    */
-  const mapBunsetsu = makeBunsetsuMap(arrText)
+  const mapOnsetsu = makeOnsetsuMap(arrText)
 
-  mapBunsetsu.forEach((obj, key) => {
+  mapOnsetsu.forEach((obj, key) => {
     let thisColor
     if (obj.moji === '\n') {
       recX = 0
       recY = recY + 70
     } else {
     //母音５行とスペースで対象要素を配列から探して色をセット
-      arrBoin.forEach((value, index) => {
+      arrByBoin.forEach((value, index) => {
         let re = new RegExp('['+ value +']')
-        if (re.test(obj.boin) ) {
+        if (re.test(obj.shuin) ) {
           thisColor = colorElement[index].value;
         }
       })
+    //四角形と文字を作成
       ctx.fillStyle = thisColor; 
       ctx.fillRect(recX*60, recY , 50, 50);
       ctx.fillText(obj.moji,recX * 60 + culcRecX(obj.haba,10,50), recY + 65);
@@ -68,47 +62,47 @@ ConversionButton.onclick = () => {
 
 
 /**
- * 文を文節ごとにわけて、文節の母音と文字幅も一緒にMapに入れる
+ * 文を音節ごとにわけて、音節の母音と文字幅も一緒にMapに入れる
  * @param {Array} arrtext /文を一字づつに分けた配列
- * @returns {}　/key：追加順No* value:{moji:文節,boin:文節の主韻,haba:文節の幅})
+ * @returns {}　/key：追加順番号 value:{moji:音節,shuin:音節の主韻,haba:音節の幅})
  */
-function makeBunsetsuMap(arrtext) {
-  let mojibuf //仮文節変数
-  let boinbuf //仮母音変数
+function makeOnsetsuMap(arrtext) {
+  let mojibuf //仮音節変数
+  let shuinbuf //仮母音変数
   let cnt = 0 //Mapにセットした回数カウント用 Mapのindex
 
   const mymap = new Map()
 
   arrtext.forEach((str, index) => {
-    //最初の要素なら仮文節変数、仮母音変数にstrを入れて次へ
+    //最初の要素なら仮音節変数、仮母音変数にstrを入れて次へ
     if (index == 0){
         mojibuf = str;
-        boinbuf = str;
+        shuinbuf = str;
         return;
     }
   
     if (isYouon(str)) {
         mojibuf = mojibuf + str
-        boinbuf = str;
+        shuinbuf = str;
     } else if (/っ/.test(str)) {
         mojibuf = mojibuf + str
     } else if ((/\n/).test(str)) {
-        mymap.set (cnt,{moji:mojibuf, boin: boinbuf,haba:countHaba(mojibuf)})
+        mymap.set (cnt,{moji:mojibuf, shuin: shuinbuf,haba:countHaba(mojibuf)})
         mojibuf = str
-        boinbuf = str
+        shuinbuf = str
         cnt++
     } else if (isNotHiragana(str)) {
         mojibuf = mojibuf + str
     } else {
         console.log(cnt)
-        mymap.set (cnt,{moji:mojibuf, boin: boinbuf,haba:countHaba(mojibuf)})
+        mymap.set (cnt,{moji:mojibuf, shuin: shuinbuf,haba:countHaba(mojibuf)})
         mojibuf = str
-        boinbuf = str
+        shuinbuf = str
         cnt++
     }
   //最終の要素ならMapに追加
     if (index == arrtext.length - 1){
-        mymap.set (cnt,{moji:mojibuf, boin: boinbuf,haba:countHaba(mojibuf)})
+        mymap.set (cnt,{moji:mojibuf, shuin: shuinbuf,haba:countHaba(mojibuf)})
     }
   })
   

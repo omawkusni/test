@@ -24,3 +24,6 @@ for(let arrIndex of arrBunsetsu){
   for (let value of testMap) {
     console.log(value)
   }
+
+
+  pattern="^[0-9A-Za-z]+$" title="エラー表記"
