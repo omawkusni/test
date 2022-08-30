@@ -7,12 +7,12 @@ const inputText = document.getElementById('textin')
 
 
 const arrBoin = [
-  ["あ","か","さ","た","な","は","ま","ら","わ","が","ざ","だ","ば","ぱ","ぁ","や","ゃ","ゕ"],
-  ["い","き","し","ち","に","ひ","み","り","ゐ","ぎ","じ","ぢ","び","ぴ","ぃ"],
-  ["う","く","す","つ","ぬ","ふ","む","る","ん","ぐ","ず","づ","ぶ","ぷ","ぅ","ゆ","ゅ","ゔ"],
-  ["え","け","せ","て","ね","へ","め","れ","ゑ","げ","ぜ","で","べ","ぺ","ぇ","ゖ"],
-  ["お","こ","そ","と","の","ほ","も","ろ","を","ご","ぞ","ど","ぼ","ぽ","ぉ","よ","ょ"],
-  [" ","　"]
+  "あかさたなはまらわがざだばぱぁやゃゕ",
+  "いきしちにひみりゐぎじぢびぴぃ",
+  "うくすつぬふむるんぐずづぶぷぅゆゅゔ",
+  "えけせてねへめれゑげぜでべぺぇゖ",
+  "おこそとのほもろをごぞどぼぽぉよょ",
+  " 　" //半角スペースと全角スペース
   ];
 
   
@@ -32,13 +32,19 @@ ConversionButton.onclick = () => {
 
   //テキストを1文字づつ配列にいれる
   const arrText = inputText.value.split('');
-
-  var ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, 1000, 1000)//描画をクリア
+  ctx.font = 'bold 10pt serif';
   let recX = 0
   let recY = 0
-  let mapBunsetsu = new Map
-  mapBunsetsu = makeBunsetsuMap(arrText)
+
+  /**
+   * Mapオブジェクト
+   * (key：追加順No
+   * value:{moji:文節,boin:文節の主韻,haba:文節の幅})    
+   */
+  const mapBunsetsu = makeBunsetsuMap(arrText)
+
   mapBunsetsu.forEach((obj, key) => {
     let thisColor
     if (obj.moji === '\n') {
@@ -46,16 +52,15 @@ ConversionButton.onclick = () => {
       recY = recY + 70
     } else {
     //母音５行とスペースで対象要素を配列から探して色をセット
-      for (let index = 0; index < 6; index++) {
-        if (arrBoin[index].includes(obj.boin) ) {
+      arrBoin.forEach((value, index) => {
+        let re = new RegExp('['+ value +']')
+        if (re.test(obj.boin) ) {
           thisColor = colorElement[index].value;
         }
-      }
+      })
       ctx.fillStyle = thisColor; 
       ctx.fillRect(recX*60, recY , 50, 50);
-      ctx.font = 'bold 10pt serif';
-      console.log (obj.haba);
-      ctx.fillText(obj.moji,recX*60+culcRecX(obj.haba,10,50), recY+65)
+      ctx.fillText(obj.moji,recX * 60 + culcRecX(obj.haba,10,50), recY + 65);
       recX++
     }
   })
@@ -63,17 +68,17 @@ ConversionButton.onclick = () => {
 
 
 /**
- * 文字列を文節ごとにわけて、文節の母音と文字幅も一緒にMapに入れる
- * @param {Array} arrtext 
- * @returns {Map}
+ * 文を文節ごとにわけて、文節の母音と文字幅も一緒にMapに入れる
+ * @param {Array} arrtext /文を一字づつに分けた配列
+ * @returns {}　/key：追加順No* value:{moji:文節,boin:文節の主韻,haba:文節の幅})
  */
 function makeBunsetsuMap(arrtext) {
-
   let mojibuf //仮文節変数
   let boinbuf //仮母音変数
   let cnt = 0 //Mapにセットした回数カウント用 Mapのindex
 
   const mymap = new Map()
+
   arrtext.forEach((str, index) => {
     //最初の要素なら仮文節変数、仮母音変数にstrを入れて次へ
     if (index == 0){
@@ -85,9 +90,9 @@ function makeBunsetsuMap(arrtext) {
     if (isYouon(str)) {
         mojibuf = mojibuf + str
         boinbuf = str;
-    } else if (str.match(/っ/)) {
+    } else if (/っ/.test(str)) {
         mojibuf = mojibuf + str
-    } else if (str.match(/\n/)) {
+    } else if ((/\n/).test(str)) {
         mymap.set (cnt,{moji:mojibuf, boin: boinbuf,haba:countHaba(mojibuf)})
         mojibuf = str
         boinbuf = str
@@ -107,20 +112,20 @@ function makeBunsetsuMap(arrtext) {
     }
   })
   
-  return mymap
+  return mymap;
 }
 
 
 
 
 /**
- * 対象文字がひらがなか空白(全角・半角)かどうか
+ * 対象文字がひらがな・空白(全角・半角)・長音符（ー、～）かどうか
  * @param {String} str 
  * @returns {Boolean}
  */
 function isNotHiragana(str){
   str = (str==null)?"":str;
-  return !/[ぁ-ゖー　 ]/.test(str); //"ー"の後ろの文字は全角スペースと半角スペースです。
+  return !/[ぁ-ゖー～　 ]/.test(str); //"～"の後ろの文字は全角スペースと半角スペース
 }
 
 
@@ -141,7 +146,7 @@ function isYouon(str){
  * @returns {Number}
  */
 function countHaba(strs) {
-    let arrstr = strs.split('')
+    const arrstr = strs.split('')
     let mojihaba = 0
     arrstr.forEach(element => {
       if(/[ -~]/.test(element) ) { //半角だったら0.5足す
