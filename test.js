@@ -1,8 +1,9 @@
 'use strict';
 const ConversionButton = document.getElementById('buttonid');
 const colorElement = document.getElementsByName('boincolor');
-const canvas = document.getElementById('canvasid');
-const textElement = document.getElementById('textid')
+//const canvas = document.getElementById('canvasid');
+const textElement = document.getElementById('textid');
+const divcanvasElement =document.getElementById('divcanvasid');
 
 const arrByBoin = [
   "あかさたなはまらわがざだばぱぁやゃゕ",
@@ -12,20 +13,41 @@ const arrByBoin = [
   "おこそとのほもろをごぞどぼぽぉよょ",
   " 　" //半角スペースと全角スペース
   ];
+  
+  
 
 //変換ボタンを押したときの出力
 ConversionButton.onclick = () => {
+ const  arrbyKaigyou=  textElement.value.split('\n');
+ 
+console.log("つづいてるよ")
+
   // テキストが空の時は処理を終了する
   if (textElement.length === 0) { return; }
+  if( document.getElementById("canvasid") != null ){
+    document.getElementById("canvasid").remove();
+  }
+
+  const newCanvas = document.createElement("canvas");
+  newCanvas.setAttribute("width", "1000");
+  newCanvas.setAttribute("height", "1000");
+ newCanvas.setAttribute("id", "canvasid");
+  divcanvasElement.appendChild(newCanvas);
   // キャンバスに未対応の場合
-  if (!canvas.getContext) {
+  if (!newCanvas.getContext) {
     alert("すいません。表示ができません。" )
     return;
   }
   //テキストを1文字づつ配列にいれる
   const arrText = textElement.value.split('');
+  console.log(arrText)
+
+
+
+
+
   //キャンバスを設定
-  const ctx = canvas.getContext('2d');
+  const ctx = newCanvas.getContext('2d');
   ctx.clearRect(0, 0, 1000, 1000)//描画をクリア
   ctx.font = 'bold 10pt 游明朝';
   let recX = 0
@@ -37,7 +59,7 @@ ConversionButton.onclick = () => {
    * value:{moji:音節,shuin:音節の主韻,haba:音節の幅})
    */
   const mapOnsetsu = makeOnsetsuMap(arrText)
-
+    console.log(mapOnsetsu)
   mapOnsetsu.forEach((obj, key) => {
     let thisColor
     if (obj.moji === '\n') {
@@ -59,7 +81,39 @@ ConversionButton.onclick = () => {
     }
   })
  
-
+  function checkMoji(arrbyKaigyou) {
+    let alertMoji = ""
+    let maxMojisu = ""
+    let maxGyosu = ""
+    const strSmall = "ぁぃぅぇぉゃゅょゎゕゖっ"
+    arrbyKaigyou.forEach((value,index) => {
+      let cnthiragana = (value.match( /[ぁ-ゖ]/g ) || []).length;
+      let cntsmall = (value.match( new RegExp( "[" + strSmall +"]", "g" ) ) || []).length;
+      let mojisu = cnthiragana-cntsmall
+      if (mojisu>15) {
+        if (alertMoji =="") {
+          alertMoji = `${index+1}行目 ${mojisu-15}文字オーバーです\n`;
+        } else {
+          alertMoji = `${alertMoji}${index+1}行目 ${mojisu-15}文字オーバーです\n`;
+        }
+      }
+    })
+    let Gyosu = arrbyKaigyou.length
+    if(Gyosu > 13) {
+      if (alertMoji == "") {
+        alertMoji = `行数が${Gyosu}行オーバーです\n`;
+      } else {
+        alertMoji = `${alertMoji}行数が${Gyosu - 13}行オーバーです\n`;
+      }
+    }
+    //文字数と行数でcanvasサイズ変えたかったですが時間切れです
+    if (!alertMoji==""){
+      alert(alertMoji + "修正してください");
+      return false;
+    } else {
+      return true;
+    }
+  }
 
 /**
  * 文を音節ごとにわけて、音節の母音と文字幅も一緒にMapに入れる
